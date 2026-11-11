@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>КУТ — Панель администратора</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { background:#101820;color:white;padding:30px; }
+.admin { max-width:1000px;margin:auto; }
+.admin h1 { margin:25px 0;color:#d7ad62; }
+.admin-card { background:#1c2a35;padding:22px;margin:15px 0;border-left:3px solid #d7ad62; }
+.admin-card p { margin:10px 0;color:#ccc; }
+.admin button { margin-top:12px; }
+.admin-top { display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px; }
+.empty { color:#aaa;padding:30px 0; }
+</style>
+</head>
+<body>
+<div class="admin">
+  <div class="admin-top">
+    <a class="logo" href="index.html">КУТ<span>.</span></a>
+    <a href="index.html" class="btn">На сайт</a>
+  </div>
+
+  <h1>Панель администратора</h1>
+  <p>Заявки клиентов</p>
+  <div id="applications"></div>
+  <button class="btn" id="clear">Очистить все заявки</button>
+</div>
+
+<script>
+function renderApplications() {
+  const container = document.getElementById('applications');
+  const items = JSON.parse(
+    localStorage.getItem('kutApplications') || '[]'
+  );
+
+  container.innerHTML = '';
+
+  if (!items.length) {
+    container.innerHTML = '<p class="empty">Пока заявок нет.</p>';
+    return;
+  }
+
+  items.forEach((item, index) => {
+    const card = document.createElement('div');
+    card.className = 'admin-card';
+
+    const title = document.createElement('h3');
+    title.textContent = (index + 1) + '. ' + item.name;
+
+    const phone = document.createElement('p');
+    phone.textContent = 'Телефон: ' + item.phone;
+
+    const message = document.createElement('p');
+    message.textContent = 'Проект: ' + item.message;
+
+    const date = document.createElement('p');
+    date.textContent = 'Дата: ' + item.date;
+
+    card.append(title, phone, message, date);
+    container.appendChild(card);
+  });
+}
+
+renderApplications();
+
+document.getElementById('clear').addEventListener('click', () => {
+  if (confirm('Удалить все заявки?')) {
+    localStorage.removeItem('kutApplications');
+    renderApplications();
+  }
+});
+</script>
+</body>
+</html>
